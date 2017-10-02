@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Path Drawer</title>
+	<style>
+		html, body {
+			height: 100%;
+			margin: 0;
+		}
+
+		#setup {
+			height: 100%;
+			width: 25%;
+			float: left;
+		}
+
+		#canvas {
+			height: 100%;
+			width: 100%;
+			float: right;
+		}
+	</style>
+
+	<script src="drive.js"></script>
+	<script src="moves.js"></script>
+	<script src="motionprofile.js"></script>
+	<script src="draw.js"></script>
+	<script src="main.js"></script>
+</head>
+<body onload="ready();run()">
+	<!--
+	<div id="setup">
+		<form id="pathform" name="pathform">
+			<select>
+				<option>Line</option>
+				<option>Arc</option>
+				<option>Pivot</option>
+			</select><br>
+			<input type="text" placeholder="distance"></input><br>
+			<input type="text" placeholder="angle"></input><br>
+			<input type="text" placeholder="radius"></input><br>
+			<input type="text" placeholder="v_start"></input><br>
+			<input type="text" placeholder="v_max"></input><br>
+			<input type="text" placeholder="v_end"></input><br>
+			<input type="text" placeholder="accel"></input><br>
+			<br>
+			<button type="button" onclick="drawPath()">Run</button> </form>
+	</div>
+	-->
+	<canvas id="canvas"></canvas>
+</body>
