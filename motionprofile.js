@@ -10,8 +10,6 @@ function MotionProfile(vstart, vmax, vend, a, dist) {
 
 	var distUp = (this.vStart + this.vMax) * this.tUp / 2;
 	var distDown = (this.vEnd + this.vMax) * this.tDown / 2;
-	console.log(dist);
-	console.log(distUp + distDown);
 
 	if (Math.abs(dist) > distUp + distDown) {
 		this.tHold = (Math.abs(dist) - (distUp + distDown)) / this.vMax;
@@ -36,8 +34,8 @@ function MotionProfile(vstart, vmax, vend, a, dist) {
 		this.vStart = -this.vStart;
 		this.vMax = -this.vMax;
 		this.vEnd = -this.vEnd;
-		this.accelUp = -accelUp;
-		this.accelDown = -accelDown;
+		this.accelUp = -this.accelUp;
+		this.accelDown = -this.accelDown;
 	}
 
 	this.totalTime = this.tUp + this.tHold + this.tDown;

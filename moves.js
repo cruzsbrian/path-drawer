@@ -1,49 +1,30 @@
-function Line(vstart, vmax, vend, accel, dist) {
-	this.profile = new MotionProfile(vstart, vmax, vend, accel, dist);
+function Move(startTime, profile, forward) {
+	this.startTime = startTime;
+	this.profile = profile;
+	this.isForward = forward;
 
-	this.forwardSpeed = function(t) {
-		return this.profile.getVelocity(t);
-	};
-	this.turnSpeed = function(t) {
-		return 0;
-	};
+	this.endTime = this.startTime + profile.totalTime;
 
-	this.totalTime = this.profile.totalTime;
+	this.getVelocity = function(t) {
+		if (t >= this.startTime && t < this.endTime) {
+			return this.profile.getVelocity(t - this.startTime);
+		} else {
+			return 0;
+		}
+	}
 }
 
-function Pivot(vstart, vmax, vend, accel, angle) {
-	this.profile = new MotionProfile(vstart, vmax, vend, accel, angle * ROBOT_RADIUS);
+function MoveFollowingMove(move, profile, forward) {
+	this.startTime = move.endTime;
+	this.profile = profile;
+	this.isForward = forward;
 
-	this.forwardSpeed = function(t) {
-		return 0;
-	};
-	this.turnSpeed = function(t) {
-		return this.profile.getVelocity(t);
-	};
-
-	this.totalTime = this.profile.totalTime;
-}
-
-function Arc(vstart, vmax, vend, accel, angle, radius) {
-	var distForward = radius * angle;
-	var distTurn = ROBOT_RADIUS * angle;
-
-	if (distForward > distTurn) {
-		this.mpForward = new MotionProfile(vstart, vmax, vend, accel, distForward);
-		this.mpTurn = new MotionProfileFromTime(angle, 0, 0, this.mpForward.tUp, this.mpForward.tHold, this.mpForward.tDown);
-	} else {
-		this.mpTurn = new MotionProfile(0, vmax / ROBOT_RADIUS, 0, accel, angle);
-		this.mpForward = new MotionProfileFromTime(distForward, vstart, vend, this.mpTurn.tUp, this.mpTurn.tHold, this.mpTurn.tDown);
+	this.endTime = this.startTime + profile.totalTime;
+	this.getVelocity = function(t) {
+		if (t >= startTime && t < endTime) {
+			return profile.getVelocity(t - startTime);
+		} else {
+			return 0;
+		}
 	}
-
-	this.forwardSpeed = function(t) {
-		//return distForward / this.mpForward.totalTime;
-		return this.mpForward.getVelocity(t);
-	}
-	this.turnSpeed = function(t) {
-		//return angle / this.mpForward.totalTime
-		return this.mpTurn.getVelocity(t);
-	}
-
-	this.totalTime = this.mpForward.totalTime;
 }
