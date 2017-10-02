@@ -40,41 +40,15 @@ function MotionProfile(vstart, vmax, vend, a, dist) {
 
 	this.totalTime = this.tUp + this.tHold + this.tDown;
 
-	this.getVelocity = getProfileVelocity;
-}
+	this.getVelocity = function(t) {
+		if (t < this.tUp) {
+			return this.vStart + t * this.accelUp;
+		} else if (t - this.tUp < this.tHold) {
+			return this.vMax;
+		} else if (t - this.tUp - this.tHold < this.tDown) {
+			return this.vMax - (t - this.tUp - this.tHold) * this.accelDown;
+		}
 
-function MotionProfileFromTime(dist, vStart, vEnd, tUp, tHold, tDown) {
-	this.vStart = vStart;
-	this.vMax = (dist - 0.5 * tUp * vStart - 0.5 * tDown * vEnd) / (0.5 * tUp + tHold + 0.5 * tDown);
-	this.vEnd = vEnd;
-
-	this.tUp = tUp;
-	this.tHold = tHold;
-	this.tDown = tDown;
-
-	this.accelUp = (this.vMax - this.vStart) / this.tUp;
-	this.accelDown = (this.vMax - this.vEnd) / this.tDown;
-
-	if (dist < 0) {
-		this.vStart = -this.vStart;
-		this.vMax = -this.vMax;
-		this.vEnd = -this.vEnd;
-		this.accelUp = -accelUp;
-		this.accelDown = -accelDown;
-	}
-
-	this.totalTime = this.tUp + this.tHold + this.tDown;
-	this.getVelocity = getProfileVelocity;
-}
-
-function getProfileVelocity(t) {
-	if (t < this.tUp) {
-		return this.vStart + t * this.accelUp;
-	} else if (t - this.tUp < this.tHold) {
-		return this.vMax;
-	} else if (t - this.tUp - this.tHold < this.tDown) {
-		return this.vMax - (t - this.tUp - this.tHold) * this.accelDown;
-	}
-
-	return 0;
+		return 0;
+	};
 }

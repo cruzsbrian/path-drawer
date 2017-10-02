@@ -13,18 +13,3 @@ function Move(startTime, profile, forward) {
 		}
 	}
 }
-
-function MoveFollowingMove(move, profile, forward) {
-	this.startTime = move.endTime;
-	this.profile = profile;
-	this.isForward = forward;
-
-	this.endTime = this.startTime + profile.totalTime;
-	this.getVelocity = function(t) {
-		if (t >= startTime && t < endTime) {
-			return profile.getVelocity(t - startTime);
-		} else {
-			return 0;
-		}
-	}
-}
