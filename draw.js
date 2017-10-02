@@ -1,36 +1,59 @@
 var ctx;
 var xOffset = 0;
 var yOffset = 0;
+var scale = 40;	// pixels/ft
+var dotRadius = 5;
 
-function simulateMoves(moves) {
-	console.log(moves);
-	var totalTime = 0;
-	for (var i = 0; i < moves.length; i++) {
-		if (moves[i].endTime > totalTime) {
-			totalTime = moves[i].endTime;
-		}
-	}
-
+// draw the path given an array of points
+function drawPath(pts) {
+	ctx.strokeStyle = "black";
 	ctx.beginPath();
+	for (var i = 0; i < pts.length; i++) {
+		ctx.lineTo(-pts[i].y * scale + xOffset, -pts[i].x * scale + yOffset);
+	}
+	ctx.stroke();
+}
 
+// draw the robot at a given point
+function drawRobot(pt) {
+	var centerX = pt.x;
+	var centerY = pt.y;
+
+	// adopt robot's coordinate system for the drawing
+	ctx.translate(-centerY * scale + xOffset, -centerX * scale + yOffset);
+	ctx.rotate(-pt.t);
+
+	// frame rectangle
+	ctx.strokeStyle = "red";
+	ctx.beginPath();
+	ctx.rect(-ROBOT_WIDTH * scale / 2, -ROBOT_LENGTH * scale / 2, ROBOT_WIDTH * scale, ROBOT_LENGTH * scale);
+	ctx.stroke();
+
+	// center dot
+	ctx.fillStyle = "red";
+	ctx.beginPath();
+	ctx.arc(0, 0, dotRadius, 2 * Math.PI, false);
+	ctx.fill();
+
+	// reset coordinate system
+	ctx.rotate(pt.t);
+	ctx.translate(centerY * scale - xOffset, centerX * scale - yOffset);
+}
+
+// starts a looping animation of the robot through the path
+function animateRobot(pts, timestep) {
 	var t = 0;
 	setInterval(function() {
-		var vforward = 0;
-		var vturn = 0;
-		for (var i = 0; i < moves.length; i++) {
-			if (moves[i].isForward) {
-				vforward += moves[i].getVelocity(t);
-			} else {
-				vturn += moves[i].getVelocity(t);
-			}
+		ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+		drawPath(pts);
+		drawRobot(pts[t]);
+
+		t++;
+		if (t === pts.length) {
+			t = 0;
 		}
-
-		DRIVETRAIN.drive(vforward, vturn, TIMESTEP);
-		ctx.lineTo(DRIVETRAIN.x * SCALE + xOffset, -DRIVETRAIN.y * SCALE + yOffset);
-		ctx.stroke();
-
-		t += TIMESTEP;
-	}, 1000 * TIMESTEP);
+	}, timestep * 1000);
 }
 
 function ready() {
